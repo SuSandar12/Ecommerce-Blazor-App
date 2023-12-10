@@ -1,0 +1,24 @@
+<div class="cus-modal modal-overlay" @onclick="CloseModal">
+    <div class="modal-content">
+        <div class="row">
+            <img class="w-200 col-6" src="@Product.ImageUrl" alt="@Product.Name" />
+            <div class="col-6">
+                <h4>@Product.Name</h4>
+                <p>@Product.Description</p>
+                <p>Price: @Product.Price.ToString("C2")</p>
+                <p>Description : @Product.LongDescription</p>
+            </div>
+        </div>
+        <button class="sort-btn mt-4" @onclick="CloseModal">Close</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Product Product { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private async Task CloseModal()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

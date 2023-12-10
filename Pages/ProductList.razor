@@ -1,0 +1,67 @@
+@page "/productlist"
+@inherits LayoutComponentBase
+
+<div class="px-4">
+    <h3 class="text-center p-2 text-uppercase">Product List</h3>
+
+    <button class="mb-2 sort-btn" @onclick="SortByPriceAsc">Sort by Price (Asc)</button>
+    <button class="mb-2 sort-btn" @onclick="SortByPriceDesc">Sort by Price (Desc)</button>
+    <div  class="row">
+            @foreach (var product in sortedProducts)
+            {
+               <div class="col-md-4 mb-3">
+                    <div class="card product" style="cursor:pointer;" @onclick="() => ShowProductDetails(product)">
+                        <img src="@product.ImageUrl"  class="card-img-top" alt="@product.Name" />
+                        <div class="card-body">
+                            <p>@product.Name</p>
+                            <p>@product.Price.ToString("C2")</p>
+                            <p>@product.Description</p>
+                        </div>
+                    </div>
+               </div>
+            }
+    </div>
+</div>
+@if (selectedProduct != null)
+{
+   <ProductDetailsModel Product="selectedProduct" OnClose="CloseModal" />
+
+}
+
+@code {
+    List<Product> products = new List<Product>
+    {
+        new Product { Name = "Product 1", Price = 170.00, ImageUrl = "/assets/images/product1.jpg", Description = "Description 1", Type = "Perfume", LongDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." },
+        new Product { Name = "Product 2", Price = 150.00, ImageUrl = "/assets/images/product2.jpg", Description = "Description 2", Type = "Perfume",  LongDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."},
+        new Product { Name = "Product 3", Price = 200.00, ImageUrl = "/assets/images/product3.jpg", Description = "Description 3", Type = "Perfume",  LongDescription = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." },
+        
+    };
+
+    List<Product> sortedProducts;
+    Product selectedProduct;
+
+    protected override void OnInitialized()
+    {
+        sortedProducts = new List<Product>(products);
+    }
+
+     private void SortByPriceAsc()
+    {
+        sortedProducts = sortedProducts.OrderBy(p => p.Price).ToList();
+    }
+
+    private void SortByPriceDesc()
+    {
+        sortedProducts = sortedProducts.OrderByDescending(p => p.Price).ToList();
+    }
+    private void ShowProductDetails(Product product)
+    {
+        selectedProduct = product;
+    StateHasChanged();
+    }
+
+    private void CloseModal()
+    {
+        selectedProduct = null;
+    }
+}
